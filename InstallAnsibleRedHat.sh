@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # enregistrement de la VM aupres de Red Hat si besoin
 # subscription-manager register --auto-attach
