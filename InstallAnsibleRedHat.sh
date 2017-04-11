@@ -3,10 +3,13 @@
 # subscription-manager register --auto-attach
 
 # The easiest way to install Ansible is by adding a third-party repository named EPEL (Extra Packages for Enterprise Linux), which is maintained over at http://fedoraproject.org/wiki/EPEL. You can easily add the repo by running the following command:
-sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+# Update si necessaire
+yum -y update
 
 # Installation de Ansible
-#sudo yum -y install ansible
+yum -y install ansible
 
 # check de la version d Ansible
 # ansible --version
