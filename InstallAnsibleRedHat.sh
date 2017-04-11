@@ -6,7 +6,7 @@
 sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
 # Installation de Ansible
-sudo yum -y install ansible
+#sudo yum -y install ansible
 
 # check de la version d Ansible
-ansible --version
+# ansible --version
