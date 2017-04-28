@@ -21,3 +21,4 @@ echo xfce4-session >~/.xsession
 
 # sudo vi /etc/xrdp/startwm.sh
 # Add line xfce4-session before the line /etc/X11/Xsession.
+# sudo service xrdp restart
