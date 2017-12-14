@@ -27,6 +27,10 @@
 resource "azurerm_resource_group" "Terra-RG-Stan1" {
   name     = "RG-Stan1-Lab1"
   location = "${var.AzureRegion}"
+  tags {
+    environment = "WorkshopIAC"
+    usage       = "demo"
+  }
 }
 
 # OMS Workspace
