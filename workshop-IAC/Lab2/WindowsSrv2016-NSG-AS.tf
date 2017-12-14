@@ -18,15 +18,15 @@
 # To customize your deployment : search and replace all occurence of "Stan1" string with your custom string
 
 #variable definition
-# voir dans le fichier Variables-Terraform-Lab1.tf
-# have a look in Variables-Terraform-Lab1.tf file
+# voir dans le fichier Variables-Terraform-Lab2.tf
+# have a look in Variables-Terraform-Lab2.tf file
 
 
 # Azure ressource group
 # Resource Groupe Azure
 resource "azurerm_resource_group" "Terra-RG-Stan1" {
   name     = "RG-Stan1-Lab1"
-  location = "West Europe"
+  location = "${var.AzureRegion}"
 }
 
 # OMS Workspace
@@ -50,7 +50,7 @@ resource "azurerm_log_analytics_workspace" "Terra-OMSWorkspace-Stan1" {
 resource "azurerm_virtual_network" "Terra-VNet-Stan1" {
   name                = "Vnet-Stan1"
   address_space       = ["10.0.0.0/16"]
-  location            = "West Europe"
+  location            = "${var.AzureRegion}"
   resource_group_name = "${azurerm_resource_group.Terra-RG-Stan1.name}"
 }
 
@@ -69,7 +69,7 @@ resource "azurerm_subnet" "Terra-Subnet-Stan1" {
 # NSG SubNet Subnet-Stan1
 resource "azurerm_network_security_group" "Terra-NSG-Stan1" {
   name                = "NSG-Stan1"
-  location            = "West Europe"
+  location            = "${var.AzureRegion}"
   resource_group_name = "${azurerm_resource_group.Terra-RG-Stan1.name}"
 
   security_rule {
@@ -116,7 +116,7 @@ resource "azurerm_network_security_group" "Terra-NSG-Stan1" {
 # plus d info : https://www.terraform.io/docs/providers/azurerm/r/public_ip.html
 resource "azurerm_public_ip" "Terra-PublicIp-Stan1" {
   name                         = "PublicIp-Stan1"
-  location                     = "West Europe"
+  location                     = "${var.AzureRegion}"
   resource_group_name          = "${azurerm_resource_group.Terra-RG-Stan1.name}"
   public_ip_address_allocation = "static"
   domain_name_label            = "publiciplab1-stan1"
@@ -127,7 +127,7 @@ resource "azurerm_public_ip" "Terra-PublicIp-Stan1" {
 # NIC VM attached to Subnet
 resource "azurerm_network_interface" "Terra-NIC-Stan1" {
   name                = "Nic-Stan1"
-  location            = "West Europe"
+  location            = "${var.AzureRegion}"
   resource_group_name = "${azurerm_resource_group.Terra-RG-Stan1.name}"
 
   ip_configuration {
@@ -142,7 +142,7 @@ resource "azurerm_network_interface" "Terra-NIC-Stan1" {
 # Azure Managed Disk
 resource "azurerm_managed_disk" "Terra-ManagedDisk-Stan1" {
   name                 = "ManagedDisk-Stan1"
-  location             = "West Europe"
+  location             = "${var.AzureRegion}"
   resource_group_name  = "${azurerm_resource_group.Terra-RG-Stan1.name}"
   storage_account_type = "Standard_LRS"
   create_option        = "Empty"
@@ -154,7 +154,7 @@ resource "azurerm_managed_disk" "Terra-ManagedDisk-Stan1" {
 # Availability Set for VM HA
 resource "azurerm_availability_set" "Terra-AvailabilitySet-Stan1" {
   name                = "AvailabilitySet-Stan1"
-  location            = "West Europe"
+  location            = "${var.AzureRegion}"
   managed             = "true"
   resource_group_name = "${azurerm_resource_group.Terra-RG-Stan1.name}"
 }
@@ -163,17 +163,17 @@ resource "azurerm_availability_set" "Terra-AvailabilitySet-Stan1" {
 # Azure VM
 resource "azurerm_virtual_machine" "Terra-VM-Stan1" {
   name                  = "VM-Stan1"
-  location              = "West Europe"
+  location              = "${var.AzureRegion}"
   resource_group_name   = "${azurerm_resource_group.Terra-RG-Stan1.name}"
   network_interface_ids = ["${azurerm_network_interface.Terra-NIC-Stan1.id}"]
-  vm_size               = "Standard_DS1_v2"
+  vm_size               = "${var.TailleVM}"
   availability_set_id   = "${azurerm_availability_set.Terra-AvailabilitySet-Stan1.id}"
 
   storage_image_reference {
-    publisher = "MicrosoftWindowsServer"
-    offer     = "WindowsServer"
-    sku       = "2016-Datacenter-smalldisk"
-    version   = "latest"
+    publisher = "${var.OSPublisher}"
+    offer     = "${var.OSOffer}"
+    sku       = "${var.OSsku}"
+    version   = "${var.OSversion}"
   }
 
   storage_os_disk {
@@ -196,7 +196,7 @@ resource "azurerm_virtual_machine" "Terra-VM-Stan1" {
     admin_username = "stan"
     # change here with your password
     # changer ici le mot de passe 
-    admin_password = "Stan123456"
+    admin_password = "${var.AdminPassword}"
   }
 
 # more info on os_profile_windows_config : https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html#os_profile_windows_config
@@ -211,26 +211,37 @@ os_profile_windows_config {
 # Create Azure VM Extension for OMS
 # Creation d une Azure VM Extension de type OMS
 # More info / Plus d info : https://www.terraform.io/docs/providers/azurerm/r/virtual_machine_extension.html
-resource "azurerm_virtual_machine_extension" "Terra-VMExtensionOMS-Stan1" {
-  name                 = "VMExtensionOMS-Stan1"
-  location             = "West Europe"
-  resource_group_name  = "${azurerm_resource_group.Terra-RG-Stan1.name}"
-  virtual_machine_name = "${azurerm_virtual_machine.Terra-VM-Stan1.name}"
-  publisher            = "Microsoft.EnterpriseCloud.Monitoring"
-  type                 = "MicrosoftMonitoringAgent"
-  type_handler_version = "1.0"
+# resource "azurerm_virtual_machine_extension" "Terra-VMExtensionOMS-Stan1" {
+#   name                 = "VMExtensionOMS-Stan1"
+#   location             = "West Europe"
+#   resource_group_name  = "${azurerm_resource_group.Terra-RG-Stan1.name}"
+#   virtual_machine_name = "${azurerm_virtual_machine.Terra-VM-Stan1.name}"
+#   publisher            = "Microsoft.EnterpriseCloud.Monitoring"
+#   type                 = "MicrosoftMonitoringAgent"
+#   type_handler_version = "1.0"
 
-  settings = <<SETTINGS
-    {
-        "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces/', 'OMSWorkspace-Stan1'), '2015-03-20').customerId]"
-    }
-SETTINGS
+#   settings = <<SETTINGS
+#     {
+#         "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces/', 'OMSWorkspace-Stan1'), '2015-03-20').customerId]"
+#     }
+# SETTINGS
 
-protected_settings = <<PROTECTED_SETTINGS
-{
-"workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', 'OMSWorkspace-Stan1'), '2015-03-20').primarySharedKey]"
+# protected_settings = <<PROTECTED_SETTINGS
+# {
+# "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', 'OMSWorkspace-Stan1'), '2015-03-20').primarySharedKey]"
+# }
+# PROTECTED_SETTINGS
+# }
+
+
+# --------------------
+# - Output
+# --------------------
+
+output "IP Publique de la VM" {
+  value = "${azurerm_public_ip.Terra-PublicIp-Stan1.ip_address}"
 }
-PROTECTED_SETTINGS
 
-
+output "FQDN du Bastion" {
+  value = "${azurerm_public_ip.Terra-PublicIp-Stan1.fqdn}"
 }
