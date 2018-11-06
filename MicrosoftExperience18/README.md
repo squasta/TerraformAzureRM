@@ -9,3 +9,4 @@ Ces fichiers permettent de déployer l'infrastructure suivante :
 - Un workspace Azure Log Analytics
 - 2 packs de solution pour Azure Log Analytics (Containers Insight et Containers Solution)
 
+Pour plus d'informations sur le reste de la session (Horizontal Pod Autoscaler et AKS Autoscale) allez faire un tour sur le blog de Julien : https://blog.jcorioland.io/
