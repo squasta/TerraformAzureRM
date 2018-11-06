@@ -1,1 +1,11 @@
-Mes fichiers Terraform utilisés dans la session Kubernetes de Microsoft Experience 2018 à Paris
+Mes fichiers Terraform utilisés dans la session "Azure Kubernetes Service : accélérez la conception, le déploiement et le pilotage de vos applications conteneurisées" de Microsoft Experience 2018 à Paris
+
+https://experiences18.microsoft.fr/session/7cf6019a-71d0-e811-af11-000d3a2220c8 
+
+Ces fichiers permettent de déployer l'infrastructure suivante : 
+- Un resource group
+- Un cluster Azure Kubernetes Services
+- Une Azure Container Registry
+- Un workspace Azure Log Analytics
+- 2 packs de solution pour Azure Log Analytics (Containers Insight et Containers Solution)
+
